@@ -1,0 +1,79 @@
+----- ArDSKYlite
+A very, very lightweight approximation of the venerable DSKY.
+Drastically simplified hardware, just a Uno and an LCD shield (and an RTC).
+The code is in no way a simulation of the actual device, just enough to achieve the look and a sense of the experience (perhaps).
+
+----- Basic operation
+The DSKY has three parts: A panel of indicator lights at top left, a panel of 7-segment numeric displays at top right, and a keyboard area below.
+
+The numeric panel has three 2-digit values, VERB, NOUN & PROG. Below that are three signed 5-digit "registers", R1, R2 & R3. Registers are displayed in decimal with a sign. Octal values lack the sign. This applies when entering values too; a decimal value must be started with '+' or '-', otherwise octal is assumed. Registers values must be entered with leading zeros, which are also displayed (but see Configuration).
+
+The buttons are [VERB], [NOUN], [+], [-], [0]-[9], CLR (Clear), [PRO] (Proceed), [KEY REL] (Key Release), [ENTR] (Enter) and RSET (Reset).
+
+Actions are performed by specifying Verbs (like "Display") and Nouns (like "Time"). Nouns and Verbs are identified by two-digit numbers.
+For example to show the current time:
+tap [Verb]
+tap [0] and [6] (Verb #6 is "Display Decimal")
+tap [Noun]
+tap [3] and [6] (Noun #36 is "Clock Time")
+'06' and '23' are displayed in the numbers panel under the corresponding labels
+tap [ENTR]
+The current hour, minutes and seconds are displayed on the three register lines. 
+If an entry error occurs (for example an unsupported Noun) the OPR ERR (Operator error) lamp flashes and further entry is prohibited.  This condition can be cleared by tapping [RSET] or [CLR]
+
+----- Verbs and Nouns
+These are usually abbreviated Vnn and Nnn, so for example the above is abbreviated V06N36
+A very limited set of Verbs and Nouns is supported. See https://www.ibiblio.org/apollo/A17_VN_Checklist.png for an original list!
+
+----- Verbs List
+05: Display Octal. This displays the information specified by the Noun on 1, 2 or 3 registers, in octal.
+06: Display Decimal. As above, but in decimal
+15: Monitor Octal: and
+16: Monitor Decimal: The same as the corresponding "Display" verbs, but these continue to update the value(s) until stopped by pressing [PRO] or [RSET] . These periodically flash COMP ACTY (Computer Activity).
+18: Monitor Graphical: See Moon Phase
+25: Enter Data: Enters the value(s) specified by the Noun. When running, the Verb and Noun numbers flash.
+35: Lamp Test:  This turns on/flashes all the indicator lights and displays '8's on the numeric displays.  The Verb is ignored. 
+50: Please Perform: A RPN calculator, see N9x
+99: Engine Ignition: Just fakes it :-)
+
+----- Noun List
+24: Uptime: This represents the total hours (R1), minutes (R2) and seconds (R3) the device has been running. These values can be reset with V25N24
+28: Moon Phase: The phase of the moon.  See Moon Phase
+29: Auto-run: The Verb (R1) and Noun (R2) to automatically execute at startup.  Enter zero(s) to disable.
+30: Output Flags:see Configuration
+31: Input Flags:see Configuration
+36: Clock Time: The current time, hours (R1), minutes (R2) and seconds (R3). The time is in 24-hour mode and the numbers have leading 0's (but see Configuration)
+39: Clock Date: The current year (R1), month (R2) and day of the month (R3), in that order and with leading 0's (but see Configuration)
+9x: Stack Operations. There is a 10-number stack, V50N9x performs the following stack operations on it 
+90:Clear, 91:Push, 92:Pop, 93:Dup, 94:Add, 95:Sub, 96:Mult, 97:Div, 98:Neg, 99:Swap. 
+N06N9x shows the top of the stack.
+
+Thus for example V16N36 (Monitor Decimal:Clock Time) makes the DSKY act as a clock. V18N28 (Monitor Graphical:Moon Phase) shows the moon phase graphically. 
+You could use V25N29 to have these start running when the device is turned on.
+Some verbs/nouns are based on real DSKY verbs & nouns, others are made up for this project.
+
+----- Availability
+Not all are available all the time. If USE_MOON_GRAPHICS is defined in the code, the Moon will be drawn in detail but there's no room for V50N9x and V99. If it's not defined, the Moon is a simple disk but V50N9x and V99 are available.
+
+----- Moon Phase
+When displaying/monitoring numbers, this is the age of the moon in R1 (days since the last New Moon).  
+When entering values, provide, D, H and M in R1, R2, R3, where D is the calendar days from today until the next New Moon and H:M is the time of the New Moon.
+The Monitor Graphical verb draws a representation of the current moon phase along with some other information. Note that this is approximate, based on a fixed average period of ~29.5 days.
+
+----- Configuration
+Output Flags, N30, is best entered (and displayed) in Octal (i.e. no leading sign) it consists of 5 Octal digits: 0wxyz
+w: controls the hemisphere (how the moon is rendered).  If this digit is non-zero, the Northern Hemisphere is used, otherwise Southern
+x: controls the time format. If this digit is non-zero, the time is displayed in 24-hour mode, otherwise 12-hour. Input is always 24-hour.
+y: controls leading 0 display. If this digit is non-zero, decimal register values are displayed with leading 0's, otherwise without. Input always requires leading 0's.
+z controls the date format.  If this digit is 1, the format is DMY, if 2:MDY, otherwise YMD. Input is always YMD.
+The default is 001110 (North, 24-hour, leading 0's, YMD)
+
+Input Flags, N31, is best entered (and displayed) in Octal (i.e. no leading sign) it consists of 1 Octal digit: 0000z
+z controls the button behaviour.  If this digit is non-zero, the buttons flash when pressed.  This is the default.
+
+----- References
+I modelled the behaviour on what I saw on this full-blown simulator: 
+http://svtsim.com/moonjs/agc.html
+The code is created from scratch, not based on 
+http://www.ibiblio.org/apollo/
+or similar
