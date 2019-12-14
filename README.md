@@ -22,3 +22,6 @@ YouTube video:
 
 
 The main point is to replace the 15 lamps, 21 seven-segment digits and 19 push-buttons with the touch shield.  So not the full experience of das blinken lights, but much more accessible!
+
+
+Refer to *ArDSKYlite.txt* for more information.
