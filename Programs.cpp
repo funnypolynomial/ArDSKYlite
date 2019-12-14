@@ -674,15 +674,15 @@ bool Programs::GetNotAvailable(char* buff)
   // list programs ifdef'd out for lack of memory
   bool NA = false;
 #ifndef USE_ENTER_DATA_PROGRAM
-  strcat(buff, "N25, ");
+  strcat(buff, "V25, ");
   NA = true;
 #endif  
 #ifndef USE_PLEASE_PERFORM_PROGRAM
-  strcat(buff, "N50, V9x, "); // RPN
+  strcat(buff, "V50, N9x, "); // RPN
   NA = true;
 #endif  
 #ifndef USE_IGNITION_PROGRAM
-  strcat(buff, "N99, ");
+  strcat(buff, "V99, ");
   NA = true;
 #endif
 #ifndef USE_MOON_GRAPHICS
