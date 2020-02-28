@@ -6,7 +6,11 @@ The code is in no way a simulation of the actual device, just enough to achieve 
 ----- Basic operation
 The DSKY has three parts: A panel of indicator lights at top left, a panel of 7-segment numeric displays at top right, and a keyboard area below.
 
-The numeric panel has three 2-digit values, VERB, NOUN & PROG. Below that are three signed 5-digit "registers", R1, R2 & R3. Registers are displayed in decimal with a sign. Octal values lack the sign. This applies when entering values too; a decimal value must be started with '+' or '-', otherwise octal is assumed. Registers values must be entered with leading zeros, which are also displayed (but see Configuration).
+The numeric panel has three 2-digit values, VERB, NOUN & PROG. 
+Below that are three signed 5-digit "registers", R1, R2 & R3. Registers are displayed in decimal with a sign. 
+Octal values lack the sign. 
+*NOTE* This applies when entering values too; a decimal value MUST be started with '+' or '-', otherwise octal is assumed. 
+Registers values must be entered with leading zeros, which are also displayed (but see Configuration).
 
 The buttons are [VERB], [NOUN], [+], [-], [0]-[9], CLR (Clear), [PRO] (Proceed), [KEY REL] (Key Release), [ENTR] (Enter) and RSET (Reset).
 
@@ -49,7 +53,7 @@ A very limited set of Verbs and Nouns is supported. See https://www.ibiblio.org/
 N06N9x shows the top of the stack.
 
 Thus for example V16N36 (Monitor Decimal:Clock Time) makes the DSKY act as a clock. V18N28 (Monitor Graphical:Moon Phase) shows the moon phase graphically. 
-You could use V25N29 to have these start running when the device is turned on.
+You could use V25N29 to have these start running when the device is turned on (e.g. R1=+00018, R2=+00028 for the moon phase program).
 Some verbs/nouns are based on real DSKY verbs & nouns, others are made up for this project.
 
 ----- Availability
